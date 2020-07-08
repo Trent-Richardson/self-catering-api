@@ -31,11 +31,11 @@ namespace SelfCatering
                     Address = new AddressDetails 
                     {
                         Id = 1,
-                        Address = "12 Barbados St"
+                        Address = "13 Barbados St"
                     },
                     InTime = new DateTime(1991,1,1),
                     OutTime = new DateTime(1992,1,1)
-                },
+                }
             };
         }
 
@@ -54,7 +54,18 @@ namespace SelfCatering
             return (int) r.Id;
         }
 
-        public void CancelReservation(int reservationId) => _reservations.Remove(_reservations.First(x => x.Id == reservationId));
+        public bool CancelReservation(int reservationId)
+        {
+            var reservation = _reservations.FirstOrDefault(x => x.Id == reservationId);
+            if(reservation != null)
+            {
+                _reservations.Remove(reservation);
+                return true;
+            }                
+            else 
+                return false;
+        }
+         
 
         public void UpdateReservation(DateTime inTime, DateTime outTime) 
         { 

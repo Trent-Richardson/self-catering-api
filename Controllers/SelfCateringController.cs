@@ -37,5 +37,16 @@ namespace SelfCatering.Controllers
                 return BadRequest("Sorry, unable to make booking."); 
             return Ok($"Reservation id: {id}");
         }
+
+        [HttpDelete]
+        [Route("reservation/{id}")]
+        public IActionResult CancelBooking([FromRoute] int id)
+        {
+            var result = _reservationStore.CancelReservation(id);
+            if(result)
+                return Ok($"Booking with id: {id} has been cancelled.");
+            else
+                return BadRequest("No booking found.");
+        }
     }
 }
