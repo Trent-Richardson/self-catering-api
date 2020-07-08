@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+using SelfCatering;
 
 namespace SelfCatering.Controllers
 {
@@ -47,6 +48,17 @@ namespace SelfCatering.Controllers
                 return Ok($"Booking with id: {id} has been cancelled.");
             else
                 return BadRequest("No booking found.");
+        }
+
+        [HttpPut]
+        [Route("reservation/{id}")]
+        public IActionResult UpdateBooking([FromBody] UpdateReservation updateDetails)
+        {
+            var result = _reservationStore.UpdateReservation(updateDetails);
+            if(result)
+                return Ok($"Updated booking with id: {updateDetails.Id}");
+            else
+                return BadRequest("Failed to update booking.");
         }
     }
 }

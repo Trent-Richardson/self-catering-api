@@ -39,13 +39,14 @@ namespace SelfCatering
             };
         }
 
+        private bool CheckConflictingBooking(Reservation r) => _reservations.Any(x => x.Address.Id == r.Address.Id && (r.InTime >= x.InTime && r.InTime <= x.OutTime) 
+                                        && (r.OutTime >= x.InTime && r.OutTime <= x.OutTime));
+
         public List<Reservation> GetReservations() => _reservations;
         
         public int? BookReservation(Reservation r) 
         {
-            // todo: enhance validation here ...
-            if(_reservations.Any(x => x.Address.Id == r.Address.Id && (r.InTime >= x.InTime && r.InTime <= x.OutTime) 
-                                        && (r.OutTime >= x.InTime && r.OutTime <= x.OutTime)))
+            if((r.InTime > r.OutTime) || CheckConflictingBooking(r))
                 return null;
 
             r.Id = _reservations.Max(x => x.Id) + 1;
@@ -67,10 +68,17 @@ namespace SelfCatering
         }
          
 
-        public void UpdateReservation(DateTime inTime, DateTime outTime) 
-        { 
-            // todo
+        public bool UpdateReservation(UpdateReservation r) 
+        {
+            var reservation = _reservations.FirstOrDefault(x => x.Id == r.Id);
+            if(reservation == null || (r.InTime > r.OutTime) || CheckConflictingBooking(r))
+                return false;
+            reservation.InTime = r.InTime;
+            reservation.OutTime = r.OutTime;
+            return true;
         }
+
+
         public void AddReview(string review) 
         {
             // todo

@@ -10,7 +10,7 @@ namespace SelfCatering
         List<Reservation> GetReservations();
         int? BookReservation(Reservation r);
         bool CancelReservation(int reservationId);
-        void UpdateReservation(DateTime inTime, DateTime outTime);
+        bool UpdateReservation(UpdateReservation r);
         void AddReview(string review);
     }
 }
