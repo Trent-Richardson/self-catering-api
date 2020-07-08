@@ -1,2 +1,3 @@
 # self-catering-api
-Mock implementation of a self-catering business
+Mock API implementation of a self-catering business.
+For illustrative purposes only. 
