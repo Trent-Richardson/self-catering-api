@@ -1,6 +1,5 @@
 using System.Collections.Generic;
 using System.Linq;
-using SelfCatering;
 using System;
 
 namespace SelfCatering 
@@ -8,6 +7,8 @@ namespace SelfCatering
     public class InMemoryReservationStore : IReservationStore
     {
         private List<Reservation> _reservations = new List<Reservation>();
+        private const int MAX_BOOKINGS = 100;
+        private const int MAX_REVIEW_LENGTH = 100;
 
         public InMemoryReservationStore()
         {
@@ -39,13 +40,17 @@ namespace SelfCatering
             };
         }
 
-        private bool CheckConflictingBooking(Reservation r) => _reservations.Any(x => x.Address.Id == r.Address.Id && (r.InTime >= x.InTime && r.InTime <= x.OutTime) 
-                                        && (r.OutTime >= x.InTime && r.OutTime <= x.OutTime));
+        private bool CheckConflictingBooking(Reservation r) => _reservations.Any(x => x.Address.Id == r.Address.Id 
+                                                                                    && (r.InTime >= x.InTime && r.InTime <= x.OutTime) 
+                                                                                    && (r.OutTime >= x.InTime && r.OutTime <= x.OutTime));
 
         public List<Reservation> GetReservations() => _reservations;
         
         public int? BookReservation(Reservation r) 
-        {
+        {      
+            if(_reservations.Count >= MAX_BOOKINGS)
+                return null;      
+                
             if((r.InTime > r.OutTime) || CheckConflictingBooking(r))
                 return null;
 
@@ -71,17 +76,24 @@ namespace SelfCatering
         public bool UpdateReservation(UpdateReservation r) 
         {
             var reservation = _reservations.FirstOrDefault(x => x.Id == r.Id);
-            if(reservation == null || (r.InTime > r.OutTime) || CheckConflictingBooking(r))
+            if(reservation == null 
+                    || (r.InTime > r.OutTime) 
+                    || CheckConflictingBooking(new Reservation{ Address = reservation.Address, InTime = r.InTime, OutTime = r.OutTime }))
                 return false;
             reservation.InTime = r.InTime;
             reservation.OutTime = r.OutTime;
             return true;
         }
 
-
-        public void AddReview(string review) 
+        public bool AddReview(int id, string review)
         {
-            // todo
+            if(review.Length > MAX_REVIEW_LENGTH)
+                return false;
+            var reservation = _reservations.FirstOrDefault(x => x.Id == id);
+            if(reservation == null)
+                return false;
+            reservation.Review = review;
+            return true;
         }
     }
 }

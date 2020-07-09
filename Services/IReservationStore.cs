@@ -1,7 +1,4 @@
 using System.Collections.Generic;
-using System;
-using System.Linq;
-
 
 namespace SelfCatering 
 {
@@ -11,6 +8,6 @@ namespace SelfCatering
         int? BookReservation(Reservation r);
         bool CancelReservation(int reservationId);
         bool UpdateReservation(UpdateReservation r);
-        void AddReview(string review);
+        bool AddReview(int id, string review);
     }
 }

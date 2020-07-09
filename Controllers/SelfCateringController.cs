@@ -1,10 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
-using SelfCatering;
 
 namespace SelfCatering.Controllers
 {
@@ -60,5 +55,17 @@ namespace SelfCatering.Controllers
             else
                 return BadRequest("Failed to update booking.");
         }
+
+        [HttpPatch]
+        [Route("reservation/{id}")]
+        public IActionResult ReviewBooking([FromRoute] int id, [FromBody] string review) 
+        {
+            var result = _reservationStore.AddReview(id, review);
+            if(result)
+                return Ok("Review posted.");
+            else
+                return BadRequest("Failed to post review.");
+        }
+
     }
 }
