@@ -4,13 +4,13 @@ using System;
 
 namespace SelfCatering 
 {
-    public class InMemoryReservationStore : IReservationStore
+    public class DemoInMemoryReservationStore : IReservationStore
     {
         private List<Reservation> _reservations = new List<Reservation>();
         private const int MAX_BOOKINGS = 100;
         private const int MAX_REVIEW_LENGTH = 100;
 
-        public InMemoryReservationStore()
+        public DemoInMemoryReservationStore()
         {
             // starter data
             _reservations = new List<Reservation>
