@@ -1,2 +1,4 @@
-obj
-bin
+api/src/obj
+api/src/bin
+auth/src/obj
+auth/src/bin
