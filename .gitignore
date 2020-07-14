@@ -2,3 +2,5 @@ api/src/obj
 api/src/bin
 auth/src/obj
 auth/src/bin
+.vscode/launch.json
+.vscode/tasks.json

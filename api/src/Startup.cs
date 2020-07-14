@@ -1,3 +1,4 @@
+using IdentityModel;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Builder;
@@ -39,6 +40,10 @@ namespace SelfCatering
                 options.AddPolicy("self-catering-policy", builder => 
                 {
                     builder.RequireScope("self-catering-api");
+                });
+                options.AddPolicy("review-policy", builder => 
+                {
+                    builder.RequireClaim(JwtClaimTypes.EmailVerified, "true");
                 });
             });
 

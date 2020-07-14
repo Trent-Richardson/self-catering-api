@@ -42,6 +42,8 @@ namespace AuthDemo
 
                     AllowedGrantTypes = GrantTypes.ResourceOwnerPassword,
                     AllowedScopes = { "self-catering-api" },
+
+                    AlwaysIncludeUserClaimsInIdToken = true
                 }
             };
         }

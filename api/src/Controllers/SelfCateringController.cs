@@ -59,6 +59,7 @@ namespace SelfCatering.Controllers
         }
 
         [HttpPatch]
+        [Authorize("review-policy")]
         [Route("reservation/{id}")]
         public IActionResult ReviewBooking([FromRoute] int id, [FromBody] string review) 
         {
