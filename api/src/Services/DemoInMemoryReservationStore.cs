@@ -1,14 +1,14 @@
 using System.Collections.Generic;
 using System.Linq;
 using System;
+using Enums;
+using Constants;
 
 namespace SelfCatering 
 {
     public class DemoInMemoryReservationStore : IReservationStore
     {
         private List<Reservation> _reservations = new List<Reservation>();
-        private const int MAX_BOOKINGS = 100;
-        private const int MAX_REVIEW_LENGTH = 100;
 
         public DemoInMemoryReservationStore()
         {
@@ -46,54 +46,56 @@ namespace SelfCatering
 
         public List<Reservation> GetReservations() => _reservations;
         
-        public int? BookReservation(Reservation r) 
+        public Tuple<EnumReservationResult, int?> BookReservation(ReservationCreate r) 
         {      
-            if(_reservations.Count >= MAX_BOOKINGS)
-                return null;      
+            if(_reservations.Count >= ConstantsReservation.MAX_BOOKINGS)
+                return new Tuple<EnumReservationResult, int?>(EnumReservationResult.MaxBookingExceeded, null);      
                 
-            if((r.InTime > r.OutTime) || CheckConflictingBooking(r))
-                return null;
+            var reservation = new Reservation(r); 
 
-            r.Id = _reservations.Max(x => x.Id) + 1;
-            System.Console.WriteLine(r.Id);
-            _reservations.Add(r);
-            return (int) r.Id;
+            if((r.InTime > r.OutTime) || CheckConflictingBooking(reservation))
+                return new Tuple<EnumReservationResult, int?>(EnumReservationResult.BookingConflict, null);
+
+            reservation.Id = _reservations.Max(x => x.Id) + 1;
+            _reservations.Add(reservation);
+            return new Tuple<EnumReservationResult, int?>(EnumReservationResult.Success, (int) reservation.Id);
         }
 
-        public bool CancelReservation(int reservationId)
+        public EnumReservationResult CancelReservation(int reservationId)
         {
             var reservation = _reservations.FirstOrDefault(x => x.Id == reservationId);
             if(reservation != null)
             {
                 _reservations.Remove(reservation);
-                return true;
+                return EnumReservationResult.Success;
             }                
             else 
-                return false;
+                return EnumReservationResult.NotFound;
         }
          
 
-        public bool UpdateReservation(UpdateReservation r) 
+        public EnumReservationResult UpdateReservation(UpdateReservation r) 
         {
             var reservation = _reservations.FirstOrDefault(x => x.Id == r.Id);
-            if(reservation == null 
-                    || (r.InTime > r.OutTime) 
+            if(reservation == null) 
+                return EnumReservationResult.NotFound;
+            if((r.InTime > r.OutTime) 
                     || CheckConflictingBooking(new Reservation{ Address = reservation.Address, InTime = r.InTime, OutTime = r.OutTime }))
-                return false;
+                return EnumReservationResult.BookingConflict;
             reservation.InTime = r.InTime;
             reservation.OutTime = r.OutTime;
-            return true;
+            return EnumReservationResult.Success;
         }
 
-        public bool AddReview(int id, string review)
+        public EnumReservationResult AddReview(int id, string review)
         {
-            if(review.Length > MAX_REVIEW_LENGTH)
-                return false;
+            if(review.Length > ConstantsReservation.MAX_REVIEW_LENGTH)
+                return EnumReservationResult.MaxReviewLengthExceeded;
             var reservation = _reservations.FirstOrDefault(x => x.Id == id);
             if(reservation == null)
-                return false;
+                return EnumReservationResult.NotFound;
             reservation.Review = review;
-            return true;
+            return EnumReservationResult.Success;
         }
     }
 }

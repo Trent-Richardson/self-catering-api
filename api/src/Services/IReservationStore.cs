@@ -1,13 +1,15 @@
+using System;
 using System.Collections.Generic;
+using Enums;
 
 namespace SelfCatering 
 {
     public interface IReservationStore
     {
         List<Reservation> GetReservations();
-        int? BookReservation(Reservation r);
-        bool CancelReservation(int reservationId);
-        bool UpdateReservation(UpdateReservation r);
-        bool AddReview(int id, string review);
+        Tuple<EnumReservationResult, int?> BookReservation(ReservationCreate r);
+        EnumReservationResult CancelReservation(int reservationId);
+        EnumReservationResult UpdateReservation(UpdateReservation r);
+        EnumReservationResult AddReview(int id, string review);
     }
 }

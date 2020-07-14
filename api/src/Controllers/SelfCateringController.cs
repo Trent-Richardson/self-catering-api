@@ -1,4 +1,7 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿using System;
+using Constants;
+using Enums;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 
@@ -29,12 +32,16 @@ namespace SelfCatering.Controllers
 
         [HttpPost]
         [Route("reservation")]
-        public IActionResult BookReservations([FromBody] Reservation reservation) 
+        public IActionResult BookReservations([FromBody] ReservationCreate reservation) 
         {
-            var id = _reservationStore.BookReservation(reservation);
-            if(id == null)
-                return BadRequest("Sorry, unable to make booking."); 
-            return Ok($"Reservation id: {id}");
+            var (result, id) = _reservationStore.BookReservation(reservation);
+            return result switch 
+            {
+                EnumReservationResult.Success => Ok($"Success - reservation id: {id}"),
+                EnumReservationResult.MaxBookingExceeded => BadRequest("Failed to make booking - max number of bookings exceeded."),
+                EnumReservationResult.BookingConflict => BadRequest("Failed to make booking - booking conflict detected."),
+                _ => BadRequest("Failed to make booking.")
+            };
         }
 
         [HttpDelete]
@@ -42,10 +49,12 @@ namespace SelfCatering.Controllers
         public IActionResult CancelBooking([FromRoute] int id)
         {
             var result = _reservationStore.CancelReservation(id);
-            if(result)
-                return Ok($"Booking with id: {id} has been cancelled.");
-            else
-                return BadRequest("No booking found.");
+            return result switch 
+            {
+                EnumReservationResult.Success => Ok($"Success - booking with id: {id} has been cancelled."),
+                EnumReservationResult.NotFound => BadRequest("No booking found."),
+                _ => BadRequest("Failed to cancel booking.")
+            };
         }
 
         [HttpPut]
@@ -53,10 +62,13 @@ namespace SelfCatering.Controllers
         public IActionResult UpdateBooking([FromBody] UpdateReservation updateDetails)
         {
             var result = _reservationStore.UpdateReservation(updateDetails);
-            if(result)
-                return Ok($"Updated booking with id: {updateDetails.Id}");
-            else
-                return BadRequest("Failed to update booking.");
+            return result switch
+            {
+                EnumReservationResult.Success => Ok($"Success - updated booking with id: {updateDetails.Id}"),
+                EnumReservationResult.NotFound => BadRequest("Failed to update booking - booking not found."),
+                EnumReservationResult.BookingConflict => BadRequest("Failed to update booking - booking conflict detected."),
+                _ => BadRequest("Failed to update booking.")
+            };
         }
 
         [HttpPatch]
@@ -65,10 +77,13 @@ namespace SelfCatering.Controllers
         public IActionResult ReviewBooking([FromRoute] int id, [FromBody] string review) 
         {
             var result = _reservationStore.AddReview(id, review);
-            if(result)
-                return Ok("Review posted.");
-            else
-                return BadRequest("Failed to post review.");
+            return result switch 
+            {
+                EnumReservationResult.Success => Ok("Success - review posted."),
+                EnumReservationResult.MaxReviewLengthExceeded => BadRequest($"Review length exceeded max length: {ConstantsReservation.MAX_REVIEW_LENGTH}"),
+                EnumReservationResult.NotFound => BadRequest("Booking not found."),
+                _ => BadRequest("Failed to post review.")
+            };
         }
     }
 }
