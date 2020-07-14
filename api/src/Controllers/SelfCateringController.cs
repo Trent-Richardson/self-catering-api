@@ -19,6 +19,7 @@ namespace SelfCatering.Controllers
         }
 
         [HttpGet]
+        [AllowAnonymous]
         [Route("reservation/list")]
         public IActionResult GetReservations() 
         {
