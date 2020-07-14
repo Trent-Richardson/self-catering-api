@@ -1,9 +1,11 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 
 namespace SelfCatering.Controllers
 {
     [ApiController]
+    [Authorize("self-catering-policy")]
     [Route("api/[controller]")]
     public class SelfCateringController : ControllerBase
     {

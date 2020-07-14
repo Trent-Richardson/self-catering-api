@@ -1,3 +1,5 @@
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
@@ -22,6 +24,24 @@ namespace SelfCatering
 
             services.AddSingleton<IReservationStore, DemoInMemoryReservationStore>();
             services.AddSwaggerGen();
+
+            services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+                .AddIdentityServerAuthentication(options => 
+                {
+                    options.Authority = "http://localhost:5000";    
+                    options.ApiName = "self-catering-api";
+                    options.ApiSecret = "secret";
+                    options.RequireHttpsMetadata = false;
+                });
+
+            services.AddAuthorization(options => 
+            {
+                options.AddPolicy("self-catering-policy", builder => 
+                {
+                    builder.RequireScope("self-catering-api");
+                });
+            });
+
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -46,6 +66,7 @@ namespace SelfCatering
                 c.SwaggerEndpoint("/swagger/v1/swagger.json", "Self Catering V1");
             });
 
+            app.UseAuthentication();
             app.UseAuthorization();
 
             app.UseEndpoints(endpoints =>
