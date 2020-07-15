@@ -1,5 +1,7 @@
 api/src/obj
 api/src/bin
+api/test/obj
+api/test/bin
 auth/src/obj
 auth/src/bin
 .vscode/launch.json
