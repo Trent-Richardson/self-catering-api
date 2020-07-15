@@ -13,7 +13,6 @@ namespace SelfCatering
         public AddressDetails Address { get; set; }
         public DateTime InTime { get; set; }
         public DateTime OutTime { get; set; }
-        public string Review { get; set; }
     }
     public class Reservation : ReservationCreate
     {
@@ -26,6 +25,8 @@ namespace SelfCatering
         }
 
         public int? Id { get; set; }
+        public string Review { get; set; }
+
     }
 }
 

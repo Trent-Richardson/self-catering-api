@@ -7,5 +7,6 @@ namespace Enums
         BookingConflict = 2,
         NotFound = 3,
         MaxReviewLengthExceeded = 4,
+        BookingInvalid = 5,
     }
 }

@@ -40,6 +40,13 @@ namespace SelfCatering
             };
         }
 
+        private bool CheckValidBooking(ReservationCreate r) =>  r.Address != null 
+                                                                && r.Address.Address != null
+                                                                && r.Address.Address != ""
+                                                                && r.Address.Id > 0
+                                                                && r.InTime != null
+                                                                && r.OutTime != null
+                                                                && (r.InTime < r.OutTime);
         private bool CheckConflictingBooking(Reservation r) => _reservations.Any(x => x.Address.Id == r.Address.Id 
                                                                                     && (r.InTime >= x.InTime && r.InTime <= x.OutTime) 
                                                                                     && (r.OutTime >= x.InTime && r.OutTime <= x.OutTime));
@@ -48,6 +55,9 @@ namespace SelfCatering
         
         public Tuple<EnumReservationResult, int?> BookReservation(ReservationCreate r) 
         {      
+            if(!CheckValidBooking(r))
+                return new Tuple<EnumReservationResult, int?>(EnumReservationResult.BookingInvalid, null);      
+
             if(_reservations.Count >= ConstantsReservation.MAX_BOOKINGS)
                 return new Tuple<EnumReservationResult, int?>(EnumReservationResult.MaxBookingExceeded, null);      
                 

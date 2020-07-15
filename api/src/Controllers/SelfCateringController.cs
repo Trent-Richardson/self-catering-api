@@ -40,6 +40,7 @@ namespace SelfCatering.Controllers
                 EnumReservationResult.Success => Ok($"Success - reservation id: {id}"),
                 EnumReservationResult.MaxBookingExceeded => BadRequest("Failed to make booking - max number of bookings exceeded."),
                 EnumReservationResult.BookingConflict => BadRequest("Failed to make booking - booking conflict detected."),
+                EnumReservationResult.BookingInvalid => BadRequest("Failed to make booking - booking request invalid."),
                 _ => BadRequest("Failed to make booking.")
             };
         }
