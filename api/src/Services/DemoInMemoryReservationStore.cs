@@ -10,47 +10,34 @@ namespace SelfCatering
     {
         private List<Reservation> _reservations = new List<Reservation>();
 
-        public DemoInMemoryReservationStore()
-        {
-            // starter data
-            _reservations = new List<Reservation>
-            {
-                new Reservation 
-                {
-                    Id = 1,
-                    Address = new AddressDetails 
-                    {
-                        Id = 1,
-                        Address = "12 Barbados St"
-                    },
-                    InTime = new DateTime(1990,1,1),
-                    OutTime = new DateTime(1991,1,1)
-                },
-                new Reservation 
-                {
-                    Id = 2,
-                    Address = new AddressDetails 
-                    {
-                        Id = 1,
-                        Address = "12 Barbados St"
-                    },
-                    InTime = new DateTime(1991,1,1),
-                    OutTime = new DateTime(1992,1,1)
-                }
-            };
-        }
-
         private bool CheckValidBooking(ReservationCreate r) =>  r.Address != null 
                                                                 && r.Address.Address != null
                                                                 && r.Address.Address != ""
                                                                 && r.Address.Id > 0
                                                                 && r.InTime != null
                                                                 && r.OutTime != null
-                                                                && (r.InTime < r.OutTime);
+                                                                && (r.InTime < r.OutTime)
+                                                                && (r.OutTime.Subtract(r.InTime).TotalHours <= ConstantsReservation.MAX_BOOKING_LENGTH_HOURS);
+                                                      
         private bool CheckConflictingBooking(Reservation r) => _reservations.Any(x => x.Address.Id == r.Address.Id 
-                                                                                    && ((r.InTime >= x.InTime && r.InTime <= x.OutTime) 
-                                                                                         || (r.OutTime >= x.InTime && r.OutTime <= x.OutTime)));
+                                                                                    && (CheckConflictingHours(r.InTime, r.OutTime, x.InTime, x.OutTime)));
+        private bool CheckConflictingHours(DateTime newInTime, DateTime newOutTime, DateTime currentInTime, DateTime currentOutTime)
+        {
+            var newBookingRange = GenerateHourIncrements(newInTime, newOutTime);
 
+            return newBookingRange.Any(x => currentInTime <= x && currentOutTime >= x);
+
+            List<DateTime> GenerateHourIncrements(DateTime inTime, DateTime outTime) 
+            {
+                var increments = outTime.Subtract(inTime);
+                var range = new List<DateTime>();
+                for (int i = 0; i < increments.TotalHours; i++)
+                {
+                    range.Add(inTime.AddHours(i));
+                }
+                return range;
+            } 
+        }
         public List<Reservation> GetReservations() => _reservations;
         
         public Tuple<EnumReservationResult, int?> BookReservation(ReservationCreate r) 
@@ -61,14 +48,20 @@ namespace SelfCatering
             if(_reservations.Count >= ConstantsReservation.MAX_BOOKINGS)
                 return new Tuple<EnumReservationResult, int?>(EnumReservationResult.MaxBookingExceeded, null);      
                 
-            var reservation = new Reservation(r); 
+            // normalize booking times to hour
+            var reservation = new Reservation(r);
+            reservation.InTime = NormalizeBookingDate(r.InTime);
+            reservation.OutTime = NormalizeBookingDate(r.OutTime);
 
             if(CheckConflictingBooking(reservation))
                 return new Tuple<EnumReservationResult, int?>(EnumReservationResult.BookingConflict, null);
 
-            reservation.Id = _reservations.Max(x => x.Id) + 1;
+            reservation.Id = _reservations.Count == 0 ? 1 : _reservations.Max(x => x.Id) + 1;
             _reservations.Add(reservation);
             return new Tuple<EnumReservationResult, int?>(EnumReservationResult.Success, (int) reservation.Id);
+
+            DateTime NormalizeBookingDate(DateTime bookingtime) => new DateTime(bookingtime.Year, bookingtime.Month, bookingtime.Day, bookingtime.Hour, 0, 0);
+
         }
 
         public EnumReservationResult CancelReservation(int reservationId)
@@ -89,11 +82,14 @@ namespace SelfCatering
             var reservation = _reservations.FirstOrDefault(x => x.Id == r.Id);
             if(reservation == null) 
                 return EnumReservationResult.NotFound;
+
             var updatedReservation = new Reservation{ Address = reservation.Address, InTime = r.InTime, OutTime = r.OutTime };
             if(!CheckValidBooking(updatedReservation))
                 return EnumReservationResult.BookingInvalid;
+
             if(CheckConflictingBooking(updatedReservation))
                 return EnumReservationResult.BookingConflict;
+
             reservation.InTime = r.InTime;
             reservation.OutTime = r.OutTime;
             return EnumReservationResult.Success;
@@ -103,9 +99,11 @@ namespace SelfCatering
         {
             if(review.Length > ConstantsReservation.MAX_REVIEW_LENGTH)
                 return EnumReservationResult.MaxReviewLengthExceeded;
+
             var reservation = _reservations.FirstOrDefault(x => x.Id == id);
             if(reservation == null)
                 return EnumReservationResult.NotFound;
+
             reservation.Review = review;
             return EnumReservationResult.Success;
         }

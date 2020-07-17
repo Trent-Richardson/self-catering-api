@@ -17,6 +17,7 @@ namespace Services
         [Fact]
         public void ReviewBooking_ValidReview_Success()
         {
+            InitializeTestData();
             var review = "lovely atmosphere!";
             var result = reservationStore.AddReview(1, review);
             result.ShouldBe(EnumReservationResult.Success);

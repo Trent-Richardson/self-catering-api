@@ -13,6 +13,7 @@ namespace Services
         [Fact]
         public void CancelBooking_BookingFound_Success()
         {
+            InitializeTestData();
             var result = reservationStore.CancelReservation(1);
             result.ShouldBe(EnumReservationResult.Success);
             reservationStore.GetReservations().Count.ShouldBe(1);

@@ -31,6 +31,7 @@ namespace Services
         [Fact]
         public void Book_NoConflicts_Successful()
         {
+            InitializeTestData();
             var booking = CreateTestReservation();
             var (result, id) = reservationStore.BookReservation(booking);
             result.ShouldBe(EnumReservationResult.Success);
@@ -54,12 +55,13 @@ namespace Services
         [Fact]
         public void Book_MaxBookingsExceeded_Fail()
         {
+            InitializeTestData();
             for (int i = 0; i < 98; i++)
             {
-                var (r, _) = reservationStore.BookReservation(CreateTestReservation(inTime: new DateTime(1995 + i, 1, 1), outTime: new DateTime(1995 + i, 2, 1)));
+                var (r, _) = reservationStore.BookReservation(CreateTestReservation(inTime: new DateTime(1995 + i, 1, 1), outTime: new DateTime(1995 + i, 1, 2)));
                 r.ShouldBe(EnumReservationResult.Success);
             }
-            var booking = CreateTestReservation(inTime: new DateTime(3000, 1, 1, 7, 0, 0), outTime: new DateTime(3000, 2, 1, 7, 0, 0));
+            var booking = CreateTestReservation(inTime: new DateTime(3000, 1, 1, 7, 0, 0), outTime: new DateTime(3000, 1, 14, 7, 0, 0));
             var (result, id) = reservationStore.BookReservation(booking);
             result.ShouldBe(EnumReservationResult.MaxBookingExceeded);
         }
@@ -76,9 +78,18 @@ namespace Services
         [Fact]
         public void Book_BookingConflict_Fail()
         {
-            reservationStore.BookReservation(CreateTestReservation(inTime: new DateTime(3000, 1, 1), outTime: new DateTime(3000, 2, 1)));
+            reservationStore.BookReservation(CreateTestReservation(inTime: new DateTime(3000, 1, 1, 7, 1, 0), outTime: new DateTime(3000, 1, 2, 7, 0, 0)));
+            var booking2 = CreateTestReservation(inTime: new DateTime(3000, 1, 1, 8, 0, 0), outTime: new DateTime(3000, 1, 1, 12, 0, 0));
+            var (result, id) = reservationStore.BookReservation(booking2);
+            result.ShouldBe(EnumReservationResult.BookingConflict);
+        }
+
+        [Fact]
+        public void Book_BookingConflict_Fail2()
+        {
+            reservationStore.BookReservation(CreateTestReservation(inTime: new DateTime(3000, 1, 5), outTime: new DateTime(3000, 1, 6)));
             // same address id
-            var booking2 = CreateTestReservation(inTime: new DateTime(3000, 1, 1, 7, 1, 0), outTime: new DateTime(3000, 1, 2, 7, 0, 0));
+            var booking2 = CreateTestReservation(inTime: new DateTime(3000, 1, 1), outTime: new DateTime(3000, 1, 13));
             var (result, id) = reservationStore.BookReservation(booking2);
             result.ShouldBe(EnumReservationResult.BookingConflict);
         }
