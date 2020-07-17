@@ -68,6 +68,7 @@ namespace SelfCatering.Controllers
                 EnumReservationResult.Success => Ok($"Success - updated booking with id: {updateDetails.Id}"),
                 EnumReservationResult.NotFound => BadRequest("Failed to update booking - booking not found."),
                 EnumReservationResult.BookingConflict => BadRequest("Failed to update booking - booking conflict detected."),
+                EnumReservationResult.BookingInvalid => BadRequest("Failed to update booking - booking request invalid"),
                 _ => BadRequest("Failed to update booking.")
             };
         }
