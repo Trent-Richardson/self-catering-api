@@ -16,3 +16,6 @@ To run unit tests:
 
 *dotnet test* /api/test/SelfCateringTests.csproj
 
+Postman collection for endpoint testing:
+
+/api/test/self-catering.postman_collection.json
