@@ -1,6 +1,6 @@
 {
 	"info": {
-		"_postman_id": "0801d9f6-52ce-4851-b71d-a8074614f326",
+		"_postman_id": "6fd50256-b4de-40f9-ad99-eb7db7d07d65",
 		"name": "self-catering",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
 	},
@@ -27,12 +27,12 @@
 								"method": "GET",
 								"header": [],
 								"url": {
-									"raw": "https://localhost:6000/api/selfcatering/reservation/list",
+									"raw": "https://localhost:5500/api/selfcatering/reservation/list",
 									"protocol": "https",
 									"host": [
 										"localhost"
 									],
-									"port": "6000",
+									"port": "5500",
 									"path": [
 										"api",
 										"selfcatering",
@@ -57,7 +57,13 @@
 									]
 								},
 								"method": "POST",
-								"header": [],
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "Bearer",
+										"type": "text"
+									}
+								],
 								"body": {
 									"mode": "raw",
 									"raw": "{\n    \"address\": {\n        \"id\": 1,\n        \"address\": \"12 Barbados St\"\n    },\n    \"inTime\": \"1988-01-01T00:00:00\",\n    \"outTime\": \"1988-01-06T00:00:00\",\n    \"review\": null\n}",
@@ -68,12 +74,12 @@
 									}
 								},
 								"url": {
-									"raw": "https://localhost:6000/api/selfcatering/reservation",
+									"raw": "https://localhost:5500/api/selfcatering/reservation",
 									"protocol": "https",
 									"host": [
 										"localhost"
 									],
-									"port": "6000",
+									"port": "5500",
 									"path": [
 										"api",
 										"selfcatering",
@@ -99,16 +105,17 @@
 								"method": "DELETE",
 								"header": [],
 								"url": {
-									"raw": "https://localhost:6000/api/selfcatering/reservation/1",
+									"raw": "https://localhost:5500/api/selfcatering/reservation/cancel/1",
 									"protocol": "https",
 									"host": [
 										"localhost"
 									],
-									"port": "6000",
+									"port": "5500",
 									"path": [
 										"api",
 										"selfcatering",
 										"reservation",
+										"cancel",
 										"1"
 									]
 								}
@@ -123,7 +130,7 @@
 									"bearer": [
 										{
 											"key": "token",
-											"value": "",
+											"value": "eyJhbGciOiJSUzI1NiIsImtpZCI6IkI5Q0UzQzY1NjY4MEMwMzlBQjhCRjhCMDkwMDQyMTY0IiwidHlwIjoiYXQrand0In0.eyJuYmYiOjE1OTUzMTIyODYsImV4cCI6MTU5NTMxNTg4NiwiaXNzIjoiaHR0cDovL2xvY2FsaG9zdDo1MDAwIiwiYXVkIjoic2VsZi1jYXRlcmluZy1hcGkiLCJjbGllbnRfaWQiOiJzZWxmLWNhdGVyaW5nLWNsaWVudCIsInN1YiI6IjIiLCJhdXRoX3RpbWUiOjE1OTUzMTIyODYsImlkcCI6ImxvY2FsIiwiZW1haWxfdmVyaWZpZWQiOmZhbHNlLCJqdGkiOiJBNDQ2MEM1QTQ0QzhERTYyOUVEQTI5RDc3MzREMzQ0MyIsImlhdCI6MTU5NTMxMjI4Niwic2NvcGUiOlsic2VsZi1jYXRlcmluZy1hcGkiXSwiYW1yIjpbInB3ZCJdfQ.oEHmM0uPqaTYtnQD5zwiZxr0dJm05KTbcEsj6Dw2R-t3a9LO49NJ2-1xy91kj0w_rGQ6SlRtFhkZDeCVn15Pr-Fk2bPjawmAbkjLQkIX1la7LfAKZxj6Q9m8FYGxhbjma3-pLw3RnvoeSugAXMyHEc-KCFpaZ70SKbg1JiRjJ4jyZogXhI-YyrISDJv4XrVAIMpYnE8eTz6WHLRGp7IKLPAlbU9Gf9kE8a7G_g-KOmS-c92lU3oGNNnhNlABGZSC8wbTbIAi6X98hThUMQCiw0Ip0Wn8srgJGdO059aLQBx_yn6kXbzqs7PKS-Riq_u5Ssr-jlaP6LbF1Wie6I3hew",
 											"type": "string"
 										}
 									]
@@ -140,16 +147,17 @@
 									}
 								},
 								"url": {
-									"raw": "https://localhost:6000/api/selfcatering/reservation/1",
+									"raw": "https://localhost:5500/api/selfcatering/reservation/update/1",
 									"protocol": "https",
 									"host": [
 										"localhost"
 									],
-									"port": "6000",
+									"port": "5500",
 									"path": [
 										"api",
 										"selfcatering",
 										"reservation",
+										"update",
 										"1"
 									]
 								}
@@ -181,16 +189,17 @@
 									}
 								},
 								"url": {
-									"raw": "https://localhost:6000/api/selfcatering/reservation/1",
+									"raw": "https://localhost:5500/api/selfcatering/reservation/review/1",
 									"protocol": "https",
 									"host": [
 										"localhost"
 									],
-									"port": "6000",
+									"port": "5500",
 									"path": [
 										"api",
 										"selfcatering",
 										"reservation",
+										"review",
 										"1"
 									]
 								}
@@ -242,17 +251,17 @@
 										},
 										{
 											"key": "username",
-											"value": "alice",
+											"value": "bob",
 											"type": "text"
 										},
 										{
 											"key": "password",
-											"value": "alice",
+											"value": "bob",
 											"type": "text"
 										},
 										{
 											"key": "scopes",
-											"value": "self-catering-api",
+											"value": "self-catering-api openid",
 											"type": "text"
 										},
 										{
@@ -293,6 +302,32 @@
 									"path": [
 										".well-known",
 										"openid-configuration"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "user info",
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "Bearer eyJhbGciOiJSUzI1NiIsImtpZCI6IkVEMTU0QTMyM0NDODFBNDJDMTFBRDRGRTU4NEFBMjU1IiwidHlwIjoiYXQrand0In0.eyJuYmYiOjE1OTUzMTEwNzQsImV4cCI6MTU5NTMxNDY3NCwiaXNzIjoiaHR0cDovL2xvY2FsaG9zdDo1MDAwIiwiYXVkIjoic2VsZi1jYXRlcmluZy1hcGkiLCJjbGllbnRfaWQiOiJzZWxmLWNhdGVyaW5nLWNsaWVudCIsInN1YiI6IjEiLCJhdXRoX3RpbWUiOjE1OTUzMTEwNzQsImlkcCI6ImxvY2FsIiwianRpIjoiNTQ4RUM0QUYxRDFGOTBBRjA2ODNCQTVCQTk2MzhBRUYiLCJpYXQiOjE1OTUzMTEwNzQsInNjb3BlIjpbIm9wZW5pZCIsInNlbGYtY2F0ZXJpbmctYXBpIl0sImFtciI6WyJwd2QiXX0.IcsYJlT6xAveDVxnRrUf8wzD3-Oo02fiz0BNOesGxWpQOnt7mMkqwePn4LLTxd9myEC_7SB5ZcZ7r-UmskZM0CJRfeYD8dhL6GLCF93ExPuQnqZJw7cOOQ3cBbwtO0bKlrNe-6ylI6JMshWfV2Z5Y-WH-aUcBQw_I37I63bXFFl6YZlKtwv6jVlVfS2MmVOMDzCn3H4JkKNHgeFRtEZcyM1HLo9moYJRtcymp8zIwjCLe6pO91agRi1NzjqgQgVkeeAsbfUXZ0rWPjLhj5rvcg3ZSapjoKZnInGS-QtgA6URiHHbBSuO3ys1FUwOU-5JK7E5j1UmYipYTxC2Ruh3IQ",
+										"type": "text"
+									}
+								],
+								"url": {
+									"raw": "http://localhost:5000/connect/userinfo",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "5000",
+									"path": [
+										"connect",
+										"userinfo"
 									]
 								}
 							},

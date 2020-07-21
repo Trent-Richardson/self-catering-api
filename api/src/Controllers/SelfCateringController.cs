@@ -46,7 +46,7 @@ namespace SelfCatering.Controllers
         }
 
         [HttpDelete]
-        [Route("reservation/{id}")]
+        [Route("reservation/cancel/{id}")]
         public IActionResult CancelBooking([FromRoute] int id)
         {
             var result = _reservationStore.CancelReservation(id);
@@ -59,7 +59,7 @@ namespace SelfCatering.Controllers
         }
 
         [HttpPut]
-        [Route("reservation/{id}")]
+        [Route("reservation/update/{id}")]
         public IActionResult UpdateBooking([FromBody] UpdateReservation updateDetails)
         {
             var result = _reservationStore.UpdateReservation(updateDetails);
@@ -75,7 +75,7 @@ namespace SelfCatering.Controllers
 
         [HttpPatch]
         [Authorize("review-policy")]
-        [Route("reservation/{id}")]
+        [Route("reservation/review/{id}")]
         public IActionResult ReviewBooking([FromRoute] int id, [FromBody] string review) 
         {
             var result = _reservationStore.AddReview(id, review);

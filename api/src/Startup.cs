@@ -71,6 +71,8 @@ namespace SelfCatering
                 c.SwaggerEndpoint("/swagger/v1/swagger.json", "Self Catering V1");
             });
 
+            app.UseStaticFiles();
+
             app.UseAuthentication();
             app.UseAuthorization();
 
